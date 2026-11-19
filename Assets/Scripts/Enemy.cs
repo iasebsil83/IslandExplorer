@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     //attr: acs
     private Rigidbody      rb;
     private GameObject     player;
-    public  ParticleSystem explosionParticle;
+    public  ParticleSystem explosionParticlePrefab;
     private AudioSource    audioPlayer;
     public  AudioClip      explosionSound;
     public  AudioClip      inflateSound;
@@ -72,8 +72,8 @@ public class Enemy : MonoBehaviour
                 audioPlayer.PlayOneShot(explosionSound, SOUND_EXPLOSION_VOLUME);
 
                 //turn invisible to get the sound playing, but make invisible
-                GetComponent<MeshRenderer>().enabled = false;
-                explosionParticle.Play();
+                GetComponent<MeshRenderer>().enabled  = false;
+                Instantiate<ParticleSystem>(explosionParticlePrefab, transform.position, transform.rotation).Play();
                 StartCoroutine(DestroyATinyBitLater());
             }
 

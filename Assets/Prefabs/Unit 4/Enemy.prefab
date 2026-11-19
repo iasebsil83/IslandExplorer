@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75e9e9bbd01b1b61a9a9b68e282866f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMove
-  explosionParticle: {fileID: 2088871590894813759, guid: 745208c9d6e104225bd99e1ab894e3bb, type: 3}
+  explosionParticlePrefab: {fileID: 2088871590894813759, guid: 745208c9d6e104225bd99e1ab894e3bb, type: 3}
   explosionSound: {fileID: 8300000, guid: a3edf518f0ec5cf81ba78d2035972b75, type: 3}
   inflateSound: {fileID: 8300000, guid: 193d3682425d779898f3fb84c6fa30c8, type: 3}
 --- !u!82 &8013462306209919240
