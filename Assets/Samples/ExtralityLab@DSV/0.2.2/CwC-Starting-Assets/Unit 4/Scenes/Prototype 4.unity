@@ -688,6 +688,18 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -895,7 +907,6 @@ GameObject:
   - component: {fileID: 1211419927}
   - component: {fileID: 1211419926}
   - component: {fileID: 1211419929}
-  - component: {fileID: 1211419930}
   - component: {fileID: 1211419931}
   - component: {fileID: 1211419932}
   m_Layer: 0
@@ -946,7 +957,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 45.7
+  field of view: 41
   orthographic: 0
   orthographic size: 3.19
   m_Depth: -1
@@ -1023,18 +1034,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &1211419930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1211419925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91354b331b7dd94048de77073e6a96ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StickToPlayer
 --- !u!114 &1211419931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1236,7 +1235,7 @@ GameObject:
   - component: {fileID: 1533970939}
   - component: {fileID: 1533970940}
   m_Layer: 0
-  m_Name: WorldInfo
+  m_Name: WorldGen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1270,6 +1269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::World
   islandPrefab: {fileID: 2172210608003467392, guid: ec2f90ebac1fe8cd6b03d9243ef58e16, type: 3}
+  tmp: {fileID: 1180137445707430, guid: dc53b7158ae10a1b78449aee8c0f2ecf, type: 3}
   islandsPos:
   - {x: 0, y: 1.5, z: 0}
   islandsObj:
@@ -1803,6 +1803,18 @@ PrefabInstance:
     - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5831814716121893815, guid: 363a8f737719f4d2eafb35f885f3706f, type: 3}
       propertyPath: m_LocalPosition.x

@@ -5,14 +5,16 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     //cfg: move
-    private const float MOVE_FORCE  = 26.0f;
+    private const float MOVE_FORCE  = 40.0f;
     private const float MOVE_DIR_Y  = 0.78f;
-    private const float MOVE_TORQUE = 0.5f;
+    private const float MOVE_TORQUE = 0.35f;
     private const float MIN_Y       = -50.0f;
 
     //cfg: physics
-    private const float JUMP_FORCE       = 100.0f;
-    private const float GRAVITY_MODIFIER = 9.5f;
+    private const float JMP_FORCE         = 130.0f;
+    private const int   JMP_COOLDOWN_MAX  = 400;
+    private const int   MOVE_COOLDOWN_MAX = 90;
+    private const float GRAVITY_MODIFIER  = 8.5f;
 
     //cfg: powerups
     private const float POWERUP_STRENGTH     = 50.0f;
@@ -20,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private const float POWERUP_ROT_SPEED    = 93.0f;
 
     //cfg: sounds
-    private const float SOUND_JUMP_VOLUME = 0.3f;
+    private const float SOUND_JMP_VOLUME = 0.3f;
 
     //attr: input
     public InputActionReference jumpActionRef;
@@ -38,7 +40,8 @@ public class PlayerController : MonoBehaviour
     //attr: game
     private bool gameOver        = false;
     private int  powerupCooldown = 0;
-    private bool isOnGround      = true;
+    private int  moveCoolDown    = 0;
+    private int  jmpCoolDown     = 0;
 
 
 
@@ -73,8 +76,8 @@ public class PlayerController : MonoBehaviour
 
             //move
             moveInput = moveActionRef.action.ReadValue<Vector2>();
-            if(isOnGround && (moveInput.x != 0 || moveInput.y != 0)){
-                isOnGround = false;
+            if(moveCoolDown == 0 && jmpCoolDown == 0 && (moveInput.x != 0 || moveInput.y != 0)){
+                moveCoolDown          = MOVE_COOLDOWN_MAX;
                 Vector3 moveDir_front = camera.transform.forward.normalized * moveInput.y;
                 Vector3 moveDir_side  = camera.transform.right.normalized   * moveInput.x;
                 Vector3 moveDir       = moveDir_front + moveDir_side + new Vector3(0, MOVE_DIR_Y, 0);
@@ -83,10 +86,10 @@ public class PlayerController : MonoBehaviour
             }
 
             //jmp
-            if(isOnGround && jumpActionRef.action.triggered) {
-                rb.AddForce(Vector3.up * JUMP_FORCE, ForceMode.Impulse);
-                audioPlayer.PlayOneShot(jumpSound, SOUND_JUMP_VOLUME);
-                isOnGround = false;
+            if(jmpCoolDown == 0 && jumpActionRef.action.triggered) {
+                jmpCoolDown = JMP_COOLDOWN_MAX;
+                rb.AddForce(Vector3.up * JMP_FORCE, ForceMode.Impulse);
+                audioPlayer.PlayOneShot(jumpSound, SOUND_JMP_VOLUME);
             }
 
             //powerup always rotating
@@ -97,6 +100,8 @@ public class PlayerController : MonoBehaviour
                 powerupCooldown--;
                 if(powerupCooldown == 0) { powerupIndicator.SetActive(false); }
             }
+            if(jmpCoolDown  != 0) { jmpCoolDown--;  }
+            if(moveCoolDown != 0) { moveCoolDown--; }
         }
     }
 
@@ -117,7 +122,7 @@ public class PlayerController : MonoBehaviour
         GameObject other = c.gameObject;
 
         //ground
-        if(other.CompareTag("Island")){ isOnGround = true; }
+        if(other.CompareTag("Island")) { jmpCoolDown = 0; }
 
         //enemy: bump
         else if(other.CompareTag("Enemy") && powerupCooldown != 0){

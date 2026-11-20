@@ -10,11 +10,11 @@ public class World : MonoBehaviour
 
     //cfg: terrain generation
     private const float GENERATION_GRID_HALFSIZE = 500.0f;
-    private const int   GENERATION_GRID_DIVISION = 7;
+    private const int   GENERATION_GRID_DIVISION = 5;
     private const float GENERATION_GRID_CELLSIZE = (2.0f * GENERATION_GRID_HALFSIZE) / GENERATION_GRID_DIVISION;
-    private const float ISLAND_X_RANGE           = 20.0f;
+    private const float ISLAND_X_RANGE           = 40.0f;
     private const float ISLAND_Y_RANGE           = 20.0f;
-    private const float ISLAND_Z_RANGE           = 20.0f;
+    private const float ISLAND_Z_RANGE           = 40.0f;
 
     //attr: acs
     private GameObject player;
@@ -59,7 +59,7 @@ public class World : MonoBehaviour
             Mathf.Abs(playerDist_sinceLastUpdate.x) > PLAYER_DISTANCE_TO_UPDATE ||
             Mathf.Abs(playerDist_sinceLastUpdate.z) > PLAYER_DISTANCE_TO_UPDATE
         ) {
-            playerDist_sinceLastUpdate = player.transform.position;
+            playerPos_atLastUpdate = player.transform.position;
             Debug.Log("UPDATING TERRAIN");
             UpdateNearbyIslands();
         }
@@ -136,7 +136,10 @@ public class World : MonoBehaviour
                 //look for an existing island in that cell already
                 bool noIslandFound = true;
                 foreach(Vector3 islandPos in islandsPos) {
-                    if(Vector3InXZBoundaries(islandPos, x1, x2, z1, z2)){ Debug.Log("ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ") IN CELL => DON'T GENERATE IN THAT CELL."); noIslandFound = false; break; }
+                    if(Vector3InXZBoundaries(islandPos, x1, x2, z1, z2)){
+                        Debug.Log("ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ") IN CELL => DON'T GENERATE IN THAT CELL.");
+                        noIslandFound = false; break;
+                    }
                 }
 
                 //no island in that cell => generate one
