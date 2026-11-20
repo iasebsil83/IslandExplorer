@@ -9,12 +9,13 @@ public class World : MonoBehaviour
     private const float ISLAND_UNLOADING_DISTANCE = 500.0f;
 
     //cfg: terrain generation
-    private const float GENERATION_GRID_HALFSIZE = 500.0f;
-    private const int   GENERATION_GRID_DIVISION = 5;
-    private const float GENERATION_GRID_CELLSIZE = (2.0f * GENERATION_GRID_HALFSIZE) / GENERATION_GRID_DIVISION;
-    private const float ISLAND_X_RANGE           = 40.0f;
-    private const float ISLAND_Y_RANGE           = 20.0f;
-    private const float ISLAND_Z_RANGE           = 40.0f;
+    private const float ISLAND_X_RANGE               = 40.0f;
+    private const float ISLAND_Y_RANGE               = 20.0f;
+    private const float ISLAND_Z_RANGE               = 40.0f;
+    private const float GENERATION_GRID_HALFSIZE     = 500.0f;
+    private const int   GENERATION_GRID_DIVISION     = 5;
+    private const float GENERATION_GRID_CELLSIZE     = (2.0f * GENERATION_GRID_HALFSIZE) / GENERATION_GRID_DIVISION;
+    private const float GENERATION_INTERDISTANCE_MIN = 2*ISLAND_X_RANGE;
 
     //attr: acs
     private GameObject player;
@@ -109,6 +110,13 @@ public class World : MonoBehaviour
 
     //terrain generation
     private void GenerateIsland(Vector3 pos) {
+
+        //last-check: cancel generation if too close to an existing island
+        foreach(Vector3 islandPos in islandsPos) {
+            Vector3 delta = islandPos - pos;
+            if(Mathf.Abs(delta.x) < GENERATION_INTERDISTANCE_MIN && Mathf.Abs(delta.z) < GENERATION_INTERDISTANCE_MIN){ return; }
+        }
+
         //Debug.Log("GENERATING ISLAND AT (" + pos.x + "," + pos.y + "," + pos.z + ")");
         islandsPos.Add(pos);
         islandsObj.Add(
@@ -131,7 +139,7 @@ public class World : MonoBehaviour
 
                 //cell boundaries
                 //Debug.Log("CHECKING CELL (" + x1 + "," + x2 + "), (" + z1 + "," + z2 + ")");
-                //Instantiate(tmp, new Vector3(x1, 0.0f, z1), tmp.transform.rotation);
+                Instantiate(tmp, new Vector3(x1, 0.0f, z1), tmp.transform.rotation);
 
                 //look for an existing island in that cell already
                 bool noIslandFound = true;

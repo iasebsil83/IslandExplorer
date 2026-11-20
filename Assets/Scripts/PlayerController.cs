@@ -5,16 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     //cfg: move
-    private const float MOVE_FORCE_ONLAND = 40.0f;
-    private const float MOVE_FORCE_FLYING = 5.0f;
-    private const float MOVE_DIR_Y        = 0.78f;
+    private const float MOVE_SPEED_ONLAND = 70f;
+    private const float MOVE_SPEED_FLYING = 25f;
     private const float MOVE_TORQUE       = 0.08f;
     private const float MIN_Y             = -50.0f;
 
     //cfg: physics
-    private const float JMP_FORCE         = 130.0f;
-    private const int   JMP_COOLDOWN_MAX  = 400;
-    private const int   MOVE_COOLDOWN_MAX = 35;
+    private const float JMP_FORCE         = 90.0f;
+    private const int   JMP_COOLDOWN_MAX  = 200;
     private const float GRAVITY_BASE      = -9.81f;
     private const float GRAVITY_MODIFIER  = 8.5f;
 
@@ -32,17 +30,17 @@ public class PlayerController : MonoBehaviour
     public Vector2              moveInput;
 
     //attr: acs
-    private Rigidbody   rb;
-    public  GameObject  powerupIndicator;
-    private AudioSource audioPlayer;
-    public  AudioClip   jumpSound;
-    public  GameObject  gameOverGUI;
-    private GameObject  camera;
+    private Rigidbody      rb;
+    public  GameObject     powerupIndicator;
+    private AudioSource    audioPlayer;
+    public  AudioClip      jumpSound;
+    public  GameObject     gameOverGUI;
+    private GameObject     camera;
+    public  ParticleSystem jmpParticlePrefab;
 
     //attr: game
     private bool gameOver        = false;
     private int  powerupCooldown = 0;
-    private int  moveCoolDown    = 0;
     private int  jmpCoolDown     = 0;
 
 
@@ -80,21 +78,21 @@ public class PlayerController : MonoBehaviour
 
             //move
             moveInput = moveActionRef.action.ReadValue<Vector2>();
-            if(moveCoolDown == 0 && (moveInput.x != 0 || moveInput.y != 0)){
-                moveCoolDown          = MOVE_COOLDOWN_MAX;
+            if(moveInput.x != 0 || moveInput.y != 0){
                 Vector3 moveDir_front = camera.transform.forward.normalized * moveInput.y;
                 Vector3 moveDir_side  = camera.transform.right.normalized   * moveInput.x;
-                Vector3 moveDir       = moveDir_front + moveDir_side + new Vector3(0, MOVE_DIR_Y, 0);
+                Vector3 moveDir       = moveDir_front + moveDir_side;
+                moveDir = new Vector3(moveDir.x, 0, moveDir.z);
 
                 //moving on the ground
                 if(jmpCoolDown == 0) {
-                    rb.AddForce( moveDir * MOVE_FORCE_ONLAND,  ForceMode.Impulse);
-                    rb.AddTorque(moveDir * MOVE_TORQUE,        ForceMode.Impulse);
+                    rb.AddForce(moveDir * MOVE_SPEED_ONLAND);
                 }
 
                 //moving in the air
                 else{
-                    rb.AddForce( moveDir * MOVE_FORCE_FLYING,  ForceMode.Impulse);
+                    rb.AddForce(moveDir * MOVE_SPEED_FLYING);
+                    rb.AddTorque(moveDir * MOVE_TORQUE, ForceMode.Impulse);
                 }
             }
 
@@ -102,6 +100,7 @@ public class PlayerController : MonoBehaviour
             if(jmpCoolDown == 0 && jumpActionRef.action.triggered) {
                 jmpCoolDown = JMP_COOLDOWN_MAX;
                 rb.AddForce(Vector3.up * JMP_FORCE, ForceMode.Impulse);
+                Instantiate<ParticleSystem>(jmpParticlePrefab, transform.position, transform.rotation).Play();
                 audioPlayer.PlayOneShot(jumpSound, SOUND_JMP_VOLUME);
             }
 
@@ -114,14 +113,14 @@ public class PlayerController : MonoBehaviour
                 if(powerupCooldown == 0) { powerupIndicator.SetActive(false); }
             }
             if(jmpCoolDown  != 0) { jmpCoolDown--;  }
-            if(moveCoolDown != 0) { moveCoolDown--; }
         }
     }
 
 
 
     //collisions
-    void OnTriggerEnter(Collider other) {
+    void OnTriggerEnter(Collider c) {
+        GameObject other = c.gameObject;
 
         //catch powerup
         if(other.CompareTag("Powerup")){
