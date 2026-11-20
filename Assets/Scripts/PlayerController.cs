@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     private const float MIN_Y       = -50.0f;
 
     //cfg: physics
-    private const float JUMP_FORCE       = 50.0f;
+    private const float JUMP_FORCE       = 100.0f;
     private const float GRAVITY_MODIFIER = 9.5f;
 
     //cfg: powerups
