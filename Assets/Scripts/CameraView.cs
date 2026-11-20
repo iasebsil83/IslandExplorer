@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class CameraView : MonoBehaviour
 {
     //cfg: view rotation speed
-    private const float CAMERA_ROTX_SPEED = 0.1f;
+    private const float CAMERA_ROTX_SPEED = 0.05f;
     private const float CAMERA_ROTZ_SPEED = 0.1f;
 
     //attr: input
@@ -47,7 +47,7 @@ public class CameraView : MonoBehaviour
         if(viewInput.x != 0 || viewInput.y != 0) {
 
             //compute X cur rot separately
-            rotX += viewInput.y * CAMERA_ROTX_SPEED;
+            rotX -= viewInput.y * CAMERA_ROTX_SPEED;
 
             //apply rotation: reset rot, pos horiz, rot horiz & vert, additional rot vert    !WARNING: SEQUENCE IS IMPORTANT!
             transform.eulerAngles = Vector3.zero;
