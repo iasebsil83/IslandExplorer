@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioPlayer;
     public  AudioClip   jumpSound;
     public  GameObject  gameOverGUI;
+    private GameObject  camera;
 
     //attr: game
     private bool gameOver        = false;
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
     void Start() {
         rb          = GetComponent<Rigidbody>();
         audioPlayer = GetComponent<AudioSource>();
+        camera      = GameObject.Find("Camera");
 
         //gravity
         Physics.gravity *= GRAVITY_MODIFIER;
@@ -73,7 +75,9 @@ public class PlayerController : MonoBehaviour
             moveInput = moveActionRef.action.ReadValue<Vector2>();
             if(isOnGround && (moveInput.x != 0 || moveInput.y != 0)){
                 isOnGround = false;
-                Vector3 moveDir = new Vector3(moveInput.x, MOVE_DIR_Y, moveInput.y);
+                Vector3 moveDir_front = camera.transform.forward.normalized * moveInput.y;
+                Vector3 moveDir_side  = camera.transform.right.normalized   * moveInput.x;
+                Vector3 moveDir       = moveDir_front + moveDir_side + new Vector3(0, MOVE_DIR_Y, 0);
                 rb.AddForce( moveDir * MOVE_FORCE,  ForceMode.Impulse);
                 rb.AddTorque(moveDir * MOVE_TORQUE, ForceMode.Impulse);
             }
