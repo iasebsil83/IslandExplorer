@@ -5,15 +5,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     //cfg: move
-    private const float MOVE_FORCE  = 40.0f;
-    private const float MOVE_DIR_Y  = 0.78f;
-    private const float MOVE_TORQUE = 0.35f;
-    private const float MIN_Y       = -50.0f;
+    private const float MOVE_FORCE_ONLAND = 40.0f;
+    private const float MOVE_FORCE_FLYING = 5.0f;
+    private const float MOVE_DIR_Y        = 0.78f;
+    private const float MOVE_TORQUE       = 0.08f;
+    private const float MIN_Y             = -50.0f;
 
     //cfg: physics
     private const float JMP_FORCE         = 130.0f;
     private const int   JMP_COOLDOWN_MAX  = 400;
-    private const int   MOVE_COOLDOWN_MAX = 90;
+    private const int   MOVE_COOLDOWN_MAX = 35;
+    private const float GRAVITY_BASE      = -9.81f;
     private const float GRAVITY_MODIFIER  = 8.5f;
 
     //cfg: powerups
@@ -52,7 +54,7 @@ public class PlayerController : MonoBehaviour
         camera      = GameObject.Find("Camera");
 
         //gravity
-        Physics.gravity *= GRAVITY_MODIFIER;
+        Physics.gravity = new Vector3(0, GRAVITY_BASE * GRAVITY_MODIFIER, 0);
     }
 
 
@@ -72,17 +74,28 @@ public class PlayerController : MonoBehaviour
             if(transform.position.y <= MIN_Y){
                 gameOver = true;
                 gameOverGUI.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible   = true;
             }
 
             //move
             moveInput = moveActionRef.action.ReadValue<Vector2>();
-            if(moveCoolDown == 0 && jmpCoolDown == 0 && (moveInput.x != 0 || moveInput.y != 0)){
+            if(moveCoolDown == 0 && (moveInput.x != 0 || moveInput.y != 0)){
                 moveCoolDown          = MOVE_COOLDOWN_MAX;
                 Vector3 moveDir_front = camera.transform.forward.normalized * moveInput.y;
                 Vector3 moveDir_side  = camera.transform.right.normalized   * moveInput.x;
                 Vector3 moveDir       = moveDir_front + moveDir_side + new Vector3(0, MOVE_DIR_Y, 0);
-                rb.AddForce( moveDir * MOVE_FORCE,  ForceMode.Impulse);
-                rb.AddTorque(moveDir * MOVE_TORQUE, ForceMode.Impulse);
+
+                //moving on the ground
+                if(jmpCoolDown == 0) {
+                    rb.AddForce( moveDir * MOVE_FORCE_ONLAND,  ForceMode.Impulse);
+                    rb.AddTorque(moveDir * MOVE_TORQUE,        ForceMode.Impulse);
+                }
+
+                //moving in the air
+                else{
+                    rb.AddForce( moveDir * MOVE_FORCE_FLYING,  ForceMode.Impulse);
+                }
             }
 
             //jmp
@@ -112,6 +125,7 @@ public class PlayerController : MonoBehaviour
 
         //catch powerup
         if(other.CompareTag("Powerup")){
+            Debug.Log("POWERUP!");
             powerupCooldown = POWERUP_COOLDOWN_MAX;
             powerupIndicator.SetActive(true);
             Destroy(other);

@@ -28,6 +28,7 @@ public class CameraView : MonoBehaviour
 
         //lock mouse movement to enable infinite view rotation
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible   = false;
 
         //ini rot
         transform.eulerAngles = new Vector3(rotX, 0.0f, rotZ);

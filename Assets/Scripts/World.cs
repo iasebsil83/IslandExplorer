@@ -43,9 +43,9 @@ public class World : MonoBehaviour
         playerPos_atLastUpdate = player.transform.position;
 
         //generate islands around
-        Debug.Log("INITIAL GENERATION - BEGIN");
+        //Debug.Log("INITIAL GENERATION - BEGIN");
         GenerateNearbyIslands();
-        Debug.Log("INITIAL GENERATION - END");
+        //Debug.Log("INITIAL GENERATION - END");
     }
 
 
@@ -60,7 +60,7 @@ public class World : MonoBehaviour
             Mathf.Abs(playerDist_sinceLastUpdate.z) > PLAYER_DISTANCE_TO_UPDATE
         ) {
             playerPos_atLastUpdate = player.transform.position;
-            Debug.Log("UPDATING TERRAIN");
+            //Debug.Log("UPDATING TERRAIN");
             UpdateNearbyIslands();
         }
     }
@@ -74,18 +74,18 @@ public class World : MonoBehaviour
     private void UpdateNearbyIslands() {
 
         //among all existing islands
-        Debug.Log("START UpdateNearbyIslands");
+        //Debug.Log("START UpdateNearbyIslands");
         for(int islandIdx=0; islandIdx < islandsPos.Count; islandIdx++) {
             Vector3    islandPos = islandsPos[islandIdx];
 			GameObject islandObj = islandsObj[islandIdx];
 			bool       isLoaded  = islandObj is null;
 			bool       tooFar    = TooFarFromPlayer(islandPos);
-            Debug.Log("TARGETING ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ")");
+            //Debug.Log("TARGETING ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ")");
 
             //too far and loaded => unload
             if(tooFar) {
             	if(isLoaded) {
-                    Debug.Log("UNLOADING ISLAND");
+                    //Debug.Log("UNLOADING ISLAND");
             		Destroy(islandObj);
             		islandsObj[islandIdx] = null;
             	}
@@ -94,7 +94,7 @@ public class World : MonoBehaviour
 			//nearby and not-loaded => load
 			else {
 				if(!isLoaded) {
-                    Debug.Log("LOADING ISLAND");
+                    //Debug.Log("LOADING ISLAND");
             		islandsObj[islandIdx] = Instantiate<GameObject>(islandPrefab, islandPos, islandPrefab.transform.rotation);
             	}
 			}
@@ -102,14 +102,14 @@ public class World : MonoBehaviour
 
 		//generate islands around, if necessary
         GenerateNearbyIslands();
-        Debug.Log("STOP UpdateNearbyIslands");
+        //Debug.Log("STOP UpdateNearbyIslands");
     }
 
 
 
     //terrain generation
     private void GenerateIsland(Vector3 pos) {
-        Debug.Log("GENERATING ISLAND AT (" + pos.x + "," + pos.y + "," + pos.z + ")");
+        //Debug.Log("GENERATING ISLAND AT (" + pos.x + "," + pos.y + "," + pos.z + ")");
         islandsPos.Add(pos);
         islandsObj.Add(
             Instantiate<GameObject>(islandPrefab, pos, islandPrefab.transform.rotation)
@@ -117,7 +117,7 @@ public class World : MonoBehaviour
     }
 
     private void GenerateNearbyIslands() {
-        Debug.Log("START GenerateNearbyIslands");
+        //Debug.Log("START GenerateNearbyIslands");
         float minX = playerPos_atLastUpdate.x - GENERATION_GRID_HALFSIZE;
         float minZ = playerPos_atLastUpdate.z - GENERATION_GRID_HALFSIZE;
         float maxX = playerPos_atLastUpdate.x + GENERATION_GRID_HALFSIZE + GENERATION_GRID_CELLSIZE;
@@ -130,14 +130,14 @@ public class World : MonoBehaviour
                 float z2 = z1 + GENERATION_GRID_CELLSIZE;
 
                 //cell boundaries
-                Debug.Log("CHECKING CELL (" + x1 + "," + x2 + "), (" + z1 + "," + z2 + ")");
+                //Debug.Log("CHECKING CELL (" + x1 + "," + x2 + "), (" + z1 + "," + z2 + ")");
                 //Instantiate(tmp, new Vector3(x1, 0.0f, z1), tmp.transform.rotation);
 
                 //look for an existing island in that cell already
                 bool noIslandFound = true;
                 foreach(Vector3 islandPos in islandsPos) {
                     if(Vector3InXZBoundaries(islandPos, x1, x2, z1, z2)){
-                        Debug.Log("ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ") IN CELL => DON'T GENERATE IN THAT CELL.");
+                        //Debug.Log("ISLAND (" + islandPos.x + "," + islandPos.y + "," + islandPos.z + ") IN CELL => DON'T GENERATE IN THAT CELL.");
                         noIslandFound = false; break;
                     }
                 }
@@ -154,6 +154,6 @@ public class World : MonoBehaviour
                 }
             }
         }
-        Debug.Log("STOP GenerateNearbyIslands");
+        //Debug.Log("STOP GenerateNearbyIslands");
     }
 }

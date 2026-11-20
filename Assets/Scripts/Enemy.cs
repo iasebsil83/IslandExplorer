@@ -13,9 +13,10 @@ public class Enemy : MonoBehaviour
     private const float EXPLOSION_GROWING_RATIO    = 1.01f;
 
     //cfg: sound
-    private const float EXPLOSION_SOUND_DELAY  = 0.5f; //in s
-    private const float SOUND_EXPLOSION_VOLUME = 0.6f;
-    private const float SOUND_INFLATE_VOLUME   = 1.0f;
+    private const float EXPLOSION_SOUND_DELAY   = 0.5f; //in s
+    private const float SOUND_EXPLOSION_VOLUME  = 0.6f;
+    private const float SOUND_INFLATE_VOLUME    = 1.0f;
+    private const float MAX_DISTANCE_SOUND_PLAY = 80.0f;
 
     //attr: acs
     private Rigidbody      rb;
@@ -28,6 +29,15 @@ public class Enemy : MonoBehaviour
     //attr: game
     private int beforeExplosion_timer;
     private int duringExplosion_timer;
+
+
+
+    //tools: sound
+    void playAudio(AudioClip audio, float volume) {
+        if(Vector3.Distance(transform.position, player.transform.position) < MAX_DISTANCE_SOUND_PLAY){
+            audioPlayer.PlayOneShot(audio, volume);
+        }
+    }
 
 
 

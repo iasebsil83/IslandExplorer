@@ -22,5 +22,7 @@ public class GameOverGUI : MonoBehaviour
     //restart game
     void RestartGame() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible   = false;
     }
 }
